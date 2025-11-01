@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "o2fo6oCPgnI=",
+  "dgSpecHash": "ankoeaS62uc=",
   "success": true,
   "projectFilePath": "/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/Game.csproj",
   "expectedPackageFiles": [
+    "/Users/ev/.nuget/packages/microsoft.win32.systemevents/9.0.10/microsoft.win32.systemevents.9.0.10.nupkg.sha512",
     "/Users/ev/.nuget/packages/opentk/4.8.2/opentk.4.8.2.nupkg.sha512",
     "/Users/ev/.nuget/packages/opentk.audio.openal/4.8.2/opentk.audio.openal.4.8.2.nupkg.sha512",
     "/Users/ev/.nuget/packages/opentk.compute/4.8.2/opentk.compute.4.8.2.nupkg.sha512",
@@ -16,6 +17,7 @@
     "/Users/ev/.nuget/packages/opentk.windowing.desktop/4.8.2/opentk.windowing.desktop.4.8.2.nupkg.sha512",
     "/Users/ev/.nuget/packages/opentk.windowing.graphicslibraryframework/4.8.2/opentk.windowing.graphicslibraryframework.4.8.2.nupkg.sha512",
     "/Users/ev/.nuget/packages/stbimagesharp/2.27.7/stbimagesharp.2.27.7.nupkg.sha512",
+    "/Users/ev/.nuget/packages/system.drawing.common/9.0.10/system.drawing.common.9.0.10.nupkg.sha512",
     "/Users/ev/.nuget/packages/system.runtime.compilerservices.unsafe/5.0.0/system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512"
   ],
   "logs": [

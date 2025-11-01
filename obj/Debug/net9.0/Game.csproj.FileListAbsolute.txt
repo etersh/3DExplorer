@@ -1,5 +1,4 @@
 /Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Game
-/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Assets/texture.png
 /Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Shaders/fragment.glsl
 /Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Shaders/vertex.glsl
 /Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Game.deps.json
@@ -33,3 +32,11 @@
 /Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/obj/Debug/net9.0/Game.pdb
 /Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/obj/Debug/net9.0/Game.genruntimeconfig.cache
 /Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/obj/Debug/net9.0/ref/Game.dll
+/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Assets/texture_box.png
+/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Assets/texture_floor.png
+/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/obj/Debug/net9.0/Game.sourcelink.json
+/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Assets/texture_wall.png
+/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/Microsoft.Win32.SystemEvents.dll
+/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/System.Drawing.Common.dll
+/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/System.Private.Windows.Core.dll
+/Users/ev/Desktop/school work/gam/midterm/Mini3DExplorer/Game/bin/Debug/net9.0/runtimes/win/lib/net9.0/Microsoft.Win32.SystemEvents.dll

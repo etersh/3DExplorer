@@ -4,23 +4,33 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Graphics.OpenGL4;
 using System;
+using System.Collections.Generic;
 using Game.Engine;
 
 namespace Game;
 public class GameWindowEx : GameWindow
 {
     Shader _shader = null!;
-    Texture _tex = null!;
+    Texture _texBox = null!;
+    Texture _texFloor = null!;
+    Texture _texWall = null!;
     Mesh _meshFloor = null!;
     Mesh _meshCube = null!;
     Mesh _meshWall = null!;
     Camera _cam = null!;
     bool _lightOn = true;
     Vector3 _lightDir = new(-0.3f, -1.0f, -0.2f);
-    Vector3 _itemPos = new(0, 0.5f, 0);
-    bool _collected = false;
-    float _collectDistance = 1.6f;
+    float _collectDistance = 2.0f;
     float _spin = 0f;
+
+    struct Box
+    {
+        public Vector3 Position;
+        public Vector3 Scale;
+        public bool Collected;
+    }
+
+    List<Box> _boxes = new();
 
     public GameWindowEx(int w, int h, string title)
         : base(GameWindowSettings.Default, new NativeWindowSettings()
@@ -39,12 +49,26 @@ public class GameWindowEx : GameWindow
         VSync = VSyncMode.On;
 
         _shader = new Shader("Shaders/vertex.glsl", "Shaders/fragment.glsl");
-        _tex = new Texture("Assets/texture.png");
+        _texBox = new Texture("Assets/texture_box.png");
+        _texFloor = new Texture("Assets/texture_floor.png");
+        _texWall = new Texture("Assets/texture_wall.png");
         _cam = new Camera(new Vector3(0, 1.5f, 3f), Size.X / (float)Size.Y);
 
-        _meshFloor = Mesh.CreateTexturedQuadXZ(10f, 0f);
         _meshCube = Mesh.CreateCube(1f);
-        _meshWall = Mesh.CreateQuadXY(10f, -5f);
+        _meshFloor = Mesh.CreateTexturedQuadXZ(40f, 0f);
+        _meshWall = Mesh.CreateQuadXY(40f, 0f);
+
+        _boxes = new List<Box>
+        {
+            new Box { Position = new Vector3(0, 0.5f, 0), Scale = new Vector3(3, 3, 3) },
+            new Box { Position = new Vector3(-6, 1f, -4), Scale = new Vector3(3, 3, 3) },
+            new Box { Position = new Vector3(-10, 0.5f, 5), Scale = new Vector3(3, 3, 3) },
+            new Box { Position = new Vector3(8, 1f, -6), Scale = new Vector3(3, 3, 3) },
+            new Box { Position = new Vector3(12, 0.5f, 3), Scale = new Vector3(3, 3, 3) },
+            new Box { Position = new Vector3(0, 0.5f, -10), Scale = new Vector3(4, 4, 4) },
+            new Box { Position = new Vector3(-8, 0.5f, -12), Scale = new Vector3(3, 3, 3) },
+            new Box { Position = new Vector3(8, 0.5f, -15), Scale = new Vector3(3, 3, 3) }
+        };
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
@@ -71,9 +95,20 @@ public class GameWindowEx : GameWindow
         if (kb.IsKeyDown(Keys.A)) _cam.Move(Camera.Direction.Left, speed * (float)e.Time);
         if (kb.IsKeyDown(Keys.D)) _cam.Move(Camera.Direction.Right, speed * (float)e.Time);
 
-        float distToItem = (_cam.Position - _itemPos).Length;
-        if (!_collected && distToItem < _collectDistance && kb.IsKeyPressed(Keys.F))
-            _collected = true;
+        if (kb.IsKeyPressed(Keys.F))
+        {
+            for (int i = 0; i < _boxes.Count; i++)
+            {
+                if (_boxes[i].Collected) continue;
+                float dist = (_cam.Position - _boxes[i].Position).Length;
+                if (dist < _collectDistance)
+                {
+                    var b = _boxes[i];
+                    b.Collected = true;
+                    _boxes[i] = b;
+                }
+            }
+        }
     }
 
     protected override void OnMouseMove(MouseMoveEventArgs e)
@@ -103,31 +138,38 @@ public class GameWindowEx : GameWindow
         _shader.SetVector3("uLightDir", Vector3.Normalize(_lightDir));
         _shader.SetInt("uLightOn", _lightOn ? 1 : 0);
 
-        _tex.Bind(TextureUnit.Texture0);
+        _texFloor.Bind(TextureUnit.Texture0);
         _shader.SetInt("uTex", 0);
-
         _shader.SetMatrix4("uModel", Matrix4.Identity);
         _meshFloor.Draw();
 
-        _shader.SetMatrix4("uModel", Matrix4.Identity);
+        _texWall.Bind(TextureUnit.Texture0);
+        _shader.SetInt("uTex", 0);
+
+        Matrix4 modelBack = Matrix4.CreateTranslation(0, 0, -20f);
+        Matrix4 modelFront = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(180)) * Matrix4.CreateTranslation(0, 0, 20f);
+        Matrix4 modelLeft = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(90)) * Matrix4.CreateTranslation(-20f, 0f, 0f);
+        Matrix4 modelRight = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(-90)) * Matrix4.CreateTranslation(20f, 0f, 0f);
+
+        _shader.SetMatrix4("uModel", modelBack);
+        _meshWall.Draw();
+        _shader.SetMatrix4("uModel", modelFront);
+        _meshWall.Draw();
+        _shader.SetMatrix4("uModel", modelLeft);
+        _meshWall.Draw();
+        _shader.SetMatrix4("uModel", modelRight);
         _meshWall.Draw();
 
-        void DrawCubeAt(Vector3 pos, Vector3 scale)
-        {
-            var model = Matrix4.CreateScale(scale) * Matrix4.CreateTranslation(pos);
-            _shader.SetMatrix4("uModel", model);
-            _meshCube.Draw();
-        }
+        _texBox.Bind(TextureUnit.Texture0);
+        _shader.SetInt("uTex", 0);
 
-        DrawCubeAt(new Vector3(-2, 0.5f, -2), new Vector3(1, 1, 1));
-        DrawCubeAt(new Vector3(2, 0.5f, -2), new Vector3(1, 1, 1));
-
-        if (!_collected)
+        foreach (var b in _boxes)
         {
-            var modelItem = Matrix4.CreateScale(1f)
+            if (b.Collected) continue;
+            var model = Matrix4.CreateScale(b.Scale)
                 * Matrix4.CreateRotationY(MathHelper.DegreesToRadians(_spin))
-                * Matrix4.CreateTranslation(_itemPos);
-            _shader.SetMatrix4("uModel", modelItem);
+                * Matrix4.CreateTranslation(b.Position);
+            _shader.SetMatrix4("uModel", model);
             _meshCube.Draw();
         }
 
@@ -141,6 +183,8 @@ public class GameWindowEx : GameWindow
         _meshCube.Dispose();
         _meshWall.Dispose();
         _shader.Dispose();
-        _tex.Dispose();
+        _texBox.Dispose();
+        _texFloor.Dispose();
+        _texWall.Dispose();
     }
 }
